@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> UECAV </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./boot/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./font/css/all.min.css">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
+  />
+</head>
+
+<body>
+
+    <div id="app" class="d-flex justify-content-center align-items-center">
+
+        <div class="container d-flex justify-content-center">
+
+            <div class="card mt-5">
+                <!-- <img class="px-5" src="./img/portada.svg" width="100%" alt=""> -->
+                <!-- <h2 class="py-3 text-center">{{ title }} </h2> -->
+                <div class="mt-5 steps d-flex justify-content-around align-items-center">
+                    <div
+                        :class="['step', 'd-flex', 'justify-content-center', 'align-items-center', stepOne ? 'check-step': '']">
+                        <i class="fas fa-address-card"></i>
+                    </div>
+                    <div
+                        :class="['step', 'd-flex', 'justify-content-center', 'align-items-center', stepTwo ? 'check-step': '']">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div
+                        :class="['step', 'd-flex', 'justify-content-center', 'align-items-center', stepThree ? 'check-step': '']">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="baseline">
+                        <span
+                            :class="['line',{ 'check-line-1': stepOne, 'check-line-2': stepTwo, 'check-line-3': stepThree }]"></span>
+                    </div>
+                </div>
+                <div class="card-content p-5">
+
+                    <div :class="['alert', 'alert-danger', alert ? '': 'd-none']" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> Requiere llenar todos los campos
+                    </div>
+
+                    <!-- Step 1 -->
+                    <div :class="['needs-validation', steps.one ? '': 'd-none' ]">
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label for="dni">Cedula de Identidad</label>
+                                <input maxlength="15" v-model="data.formPrimary.dni" type="text" class="form-control"
+                                    id="dni" placeholder="30123123" required autocomplete="off">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="validationTooltip01">Nombres</label>
+                                <input v-model="data.formPrimary.nombres" type="text" class="form-control"
+                                    id="validationTooltip01" placeholder="Nombres" required autocomplete="off">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="validationTooltip02">Apellidos</label>
+                                <input v-model="data.formPrimary.apellidos" type="text" class="form-control"
+                                    id="validationTooltip02" placeholder="Apellidos" required autocomplete="off">
+                            </div>
+                        </div>
+
+
+                        <button class="btn btn-primary mt-5" @click="next(2)"> Siguiente</button>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div :class="['needs-validation', steps.two ? '': 'd-none' ]">
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label for="user">Usuario registrado en la OPSU</label>
+                                <input v-model="data.formSecondary.userOpsu" type="text" class="form-control" id="user"
+                                    placeholder="Usuario" required autocomplete="off">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="pass">Contraseña registrada en la OPSU</label>
+                                <input v-model="data.formSecondary.passOpsu" type="text" class="form-control" id="pass"
+                                    placeholder="Contraseña" required autocomplete="off">
+                            </div>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mt-5">
+                            <button class="btn btn-outline-secondary" @click="previous(1)">Anterior</button>
+                            <button class="btn btn-primary" @click="next(3)">Siguiente</button>
+                        </div>
+                    </div>
+
+
+                    <!-- Step 3 -->
+                    <div :class="[steps.three ? '': 'd-none' ]">
+
+
+                        <div :class="['needs-validation']">
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="email">Correo registrado en la OPSU</label>
+                                    <input v-model="data.formThird.email" type="email" class="form-control" id="email"
+                                        placeholder="Correo" required autocomplete="off">
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="passTwo">Contraseña del correo registrado en la OPSU</label>
+                                    <input v-model="data.formThird.passEmail" type="text" class="form-control"
+                                        id="passTwo" placeholder="Contraseña" required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-5">
+                                <button class="btn btn-outline-secondary" @click="previous(2)">Anterior</button>
+                                <button class="btn btn-primary" @click="next('done')">Enviar</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div :class="[steps.four ? '': 'd-none' ,'animate__animated', 'animate__rubberBand']">
+                        <img class="p-5" src="./img/success.svg"  width="100%" alt="">
+                        <h3 class="mt-3 text-center">Envío exitoso</h3>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+
+
+    <script src="vue.js"></script>
+    <script src="app.js"></script>
+
+</body>
+
+</html>
