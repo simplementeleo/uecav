@@ -107,7 +107,7 @@ const app = new Vue({
     computed: {
         stepOne() {
             return this.data.formPrimary.dni != '' && this.data.formPrimary.nombres != '' && this.data.formPrimary.apellidos ? true: false
-        },
+        }, 
         stepTwo() {
             return this.data.formSecondary.userOpsu != '' && this.data.formSecondary.passOpsu != '' ? true : false
         },
