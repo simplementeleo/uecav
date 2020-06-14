@@ -21,10 +21,14 @@
 
         <div class="container d-flex justify-content-center">
 
-            <div class="card mt-5">
-                <!-- <img class="px-5" src="./img/portada.svg" width="100%" alt=""> -->
+            <div class="card my-5">
+                <div class="d-flex justify-content-center align-items-center">
+                    <span class="radius"></span>
+                    <i class="fas fa-bars text-white toggle"></i>
+                    <img class="mt-3" src="./img/logo.png" width="30%" alt="">
+                </div>
                 <!-- <h2 class="py-3 text-center">{{ title }} </h2> -->
-                <div class="mt-5 steps d-flex justify-content-around align-items-center">
+                <div class="mt-3 steps d-flex justify-content-around align-items-center">
                     <div
                         :class="['step', 'd-flex', 'justify-content-center', 'align-items-center', stepOne ? 'check-step': '']">
                         <i class="fas fa-address-card"></i>
@@ -69,7 +73,7 @@
                         </div>
 
 
-                        <button class="btn btn-primary mt-5" @click="next(2)"> Siguiente</button>
+                        <button class="btn btn-primary px-4 mt-5 next" @click="next(2)"> Siguiente</button>
                     </div>
 
                     <!-- Step 2 -->
@@ -89,8 +93,8 @@
 
 
                         <div class="d-flex justify-content-between mt-5">
-                            <button class="btn btn-outline-secondary" @click="previous(1)">Anterior</button>
-                            <button class="btn btn-primary" @click="next(3)">Siguiente</button>
+                            <button class="btn px-4 btn-outline-secondary next" @click="previous(1)">Anterior</button>
+                            <button class="btn px-4 btn-primary next" @click="next(3)">Siguiente</button>
                         </div>
                     </div>
 
@@ -114,18 +118,15 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-5">
-                                <button class="btn btn-outline-secondary" @click="previous(2)">Anterior</button>
-                                <button class="btn btn-primary" @click="next('done')">Enviar</button>
+                                <button class="btn btn-outline-secondary next px-4" @click="previous(2)">Anterior</button>
+                                <button class="btn btn-primary next px-4" @click="next('done')">Enviar</button>
                             </div>
                         </div>
 
                     </div>
                     <div :class="[steps.four ? '': 'd-none' ,'animate__animated', 'animate__rubberBand']">
                         <img class="p-5" src="./img/success.svg"  width="100%" alt="">
-                        <h3 class="mt-3 text-center">Envío exitoso</h3>
                     </div>
-
-
 
 
                 </div>
