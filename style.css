@@ -5,8 +5,17 @@
     height: 100%;
 } */
 body{
-    background: #2a1281b5 !important;
-    min-width: 350px;
+    background: #d3d3d5 !important;
+    /* min-width: 350px; */
+}
+
+.left-border {
+    border-left: 1px solid #80808073;
+}
+hr {
+    height: 10px;
+    width: 10px;
+    background: red;
 }
 
 .card {

@@ -3,7 +3,11 @@ const app = new Vue({
     data: {
         title: 'Control de Estudio',
         alert: false,
+        alertt: false,
         students: [],
+        teacher: false,
+        user: {},
+        table: false,
         data: {
             formPrimary: {
                 dni: '',
@@ -78,6 +82,23 @@ const app = new Vue({
                     this.steps.three = false
                     break;
             }
+        },
+        login(){
+            if (this.user.username === '@uecav' && this.user.password === '123456') {
+                localStorage.setItem('table', true)
+                // console.log('Entras')
+                this.table = true
+                this.teacher = false
+            }else{
+                this.alertt = true
+                setTimeout(()=> {
+                    this.alertt = false
+                }, 1000)
+            }
+        },
+        logout(){
+            localStorage.removeItem('table')
+            this.table = false
         }
     },
     computed: {
@@ -90,5 +111,13 @@ const app = new Vue({
         stepThree() {
             return this.data.formThird.email != '' && this.data.formThird.passEmail != '' ? true : false
         },
-    }
+        tableGet(){
+            return localStorage.getItem('table') == 'true' ? this.table = true : this.table = false
+        }
+    },
+    mounted() {
+        // console.log(this.tableGet)
+        // console.log(localStorage.getItem('table'))
+
+    },
 })
