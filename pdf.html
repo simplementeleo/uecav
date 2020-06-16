@@ -6,17 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="./pdfmake.min.js"></script>
-    <script src="./vfs_fonts.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="https://cdn.rawgit.com/simonbengtsson/jsPDF/requirejs-fix-dist/dist/jspdf.debug.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@2.3.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-      
+
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.65/pdfmake.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.65/vfs_fonts.js"></script> -->
 
@@ -24,246 +18,69 @@
 
 <body>
 
-    <div id="test">
-        <p>Hola vale</p><br>
-        <table border='1'>
-            <tr>
-               
-                    <td><strong>#</strong></td>
-                    <td><strong>Ceduka</strong></td>
-                    <td><strong>Nombres</strong></td>
-                    <td><strong>Apellidos</strong></td>
-                    <td><strong>Usuario</strong></td>
-                    <td><strong>Contraseña</strong></td>
-                    <td><strong>Correo</strong></td>
-                    <td><strong>Contraseña</strong></td>
-            </tr>
-            <tr v-for="i in 5">
-                <td>1</td>
-                <td>30123123</td>
-                <td>JIM PAUL DE LOS ANGELE</td>
-                <td>ANGLES PARALCIOND </td>
-                <td>USERNAME</td>
-                <td>PASSWORD</td>
-                <td>COREO@COREO.COM</td>
-                <td>PASSWORDEMAIL</td>
-            </tr>
-        </table>
-      
-    </div>
-    <br>
-    <input type="button" value="Download PDF" onclick="pdfForElement('test').open();">
+    <button onclick="generate()">Generate PDF</button>
 
-    Return to post
+    <table id="basic-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>IP-address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="i in 45">
+                <td align="right">1</td>
+                <td>Donna</td>
+                <td>Moore</td>
+                <td>dmoore0@furl.net</td>
+                <td>China</td>
+                <td>211.56.242.221</td>
+            </tr>
+
+        </tbody>
+    </table>
+
     <script>
 
         const app = new Vue({
-            el: '#test'
+            el: '#basic-table'
         })
-        function pdfForElement(id) {
-            function ParseContainer(cnt, e, p, styles) {
-                var elements = [];
-                var children = e.childNodes;
-                if (children.length != 0) {
-                    for (var i = 0; i < children.length; i++) p = ParseElement(elements, children[i], p, styles);
+        function generate() {
+
+            var doc = new jsPDF('p','pt');
+
+            var res = doc.autoTableHtmlToJson(document.getElementById("basic-table"));
+            doc.autoTable(res.columns, res.data, {
+                margin: {
+                    top: 80
                 }
-                if (elements.length != 0) {
-                    for (var i = 0; i < elements.length; i++) cnt.push(elements[i]);
-                }
-                return p;
-            }
-
-            function ComputeStyle(o, styles) {
-                for (var i = 0; i < styles.length; i++) {
-                    var st = styles[i].trim().toLowerCase().split(":");
-                    if (st.length == 2) {
-                        switch (st[0]) {
-                            case "font-size": {
-                                o.fontSize = parseInt(st[1]);
-                                break;
-                            }
-                            case "text-align": {
-                                switch (st[1]) {
-                                    case "right":
-                                        o.alignment = 'right';
-                                        break;
-                                    case "center":
-                                        o.alignment = 'center';
-                                        break;
-                                }
-                                break;
-                            }
-                            case "font-weight": {
-                                switch (st[1]) {
-                                    case "bold":
-                                        o.bold = true;
-                                        break;
-                                }
-                                break;
-                            }
-                            case "text-decoration": {
-                                switch (st[1]) {
-                                    case "underline":
-                                        o.decoration = "underline";
-                                        break;
-                                }
-                                break;
-                            }
-                            case "font-style": {
-                                switch (st[1]) {
-                                    case "italic":
-                                        o.italics = true;
-                                        break;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            function ParseElement(cnt, e, p, styles) {
-                if (!styles) styles = [];
-                if (e.getAttribute) {
-                    var nodeStyle = e.getAttribute("style");
-                    if (nodeStyle) {
-                        var ns = nodeStyle.split(";");
-                        for (var k = 0; k < ns.length; k++) styles.push(ns[k]);
-                    }
-                }
-
-                switch (e.nodeName.toLowerCase()) {
-                    case "#text": {
-                        var t = {
-                            text: e.textContent.replace(/\n/g, "")
-                        };
-                        if (styles) ComputeStyle(t, styles);
-                        p.text.push(t);
-                        break;
-                    }
-                    case "b":
-                    case "strong": {
-                        //styles.push("font-weight:bold");
-                        ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
-                        break;
-                    }
-                    case "u": {
-                        //styles.push("text-decoration:underline");
-                        ParseContainer(cnt, e, p, styles.concat(["text-decoration:underline"]));
-                        break;
-                    }
-                    case "i": {
-                        //styles.push("font-style:italic");
-                        ParseContainer(cnt, e, p, styles.concat(["font-style:italic"]));
-                        //styles.pop();
-                        break;
-                        //cnt.push({ text: e.innerText, bold: false });
-                    }
-                    case "span": {
-                        ParseContainer(cnt, e, p, styles);
-                        break;
-                    }
-                    case "br": {
-                        p = CreateParagraph();
-                        cnt.push(p);
-                        break;
-                    }
-                    case "table": {
-                        var t = {
-                            table: {
-                                widths: [],
-                                body: []
-                            }
-                        }
-                        var border = e.getAttribute("border");
-                        var isBorder = false;
-                        if (border)
-                            if (parseInt(border) == 1) isBorder = true;
-                        if (!isBorder) t.layout = 'noBorders';
-                        ParseContainer(t.table.body, e, p, styles);
-
-                        var widths = e.getAttribute("widths");
-                        if (!widths) {
-                            if (t.table.body.length != 0) {
-                                if (t.table.body[0].length != 0)
-                                    for (var k = 0; k < t.table.body[0].length; k++) t.table.widths.push("*");
-                            }
-                        } else {
-                            var w = widths.split(",");
-                            for (var k = 0; k < w.length; k++) t.table.widths.push(w[k]);
-                        }
-                        cnt.push(t);
-                        break;
-                    }
-                    case "tbody": {
-                        ParseContainer(cnt, e, p, styles);
-                        //p = CreateParagraph();
-                        break;
-                    }
-                    case "tr": {
-                        var row = [];
-                        ParseContainer(row, e, p, styles);
-                        cnt.push(row);
-                        break;
-                    }
-                    case "td": {
-                        p = CreateParagraph();
-                        var st = {
-                            stack: []
-                        }
-                        st.stack.push(p);
-
-                        var rspan = e.getAttribute("rowspan");
-                        if (rspan) st.rowSpan = parseInt(rspan);
-                        var cspan = e.getAttribute("colspan");
-                        if (cspan) st.colSpan = parseInt(cspan);
-
-                        ParseContainer(st.stack, e, p, styles);
-                        cnt.push(st);
-                        break;
-                    }
-                    case "div":
-                    case "p": {
-                        p = CreateParagraph();
-                        var st = {
-                            stack: []
-                        }
-                        st.stack.push(p);
-                        ComputeStyle(st, styles);
-                        ParseContainer(st.stack, e, p);
-
-                        cnt.push(st);
-                        break;
-                    }
-                    default: {
-                        console.log("Parsing for node " + e.nodeName + " not found");
-                        break;
-                    }
-                }
-                return p;
-            }
-
-            function ParseHtml(cnt, htmlText) {
-                var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
-                var p = CreateParagraph();
-                for (var i = 0; i < html.length; i++) ParseElement(cnt, html.get(i), p);
-            }
-
-            function CreateParagraph() {
-                var p = {
-                    text: []
-                };
-                return p;
-            }
-            content = [];
-            ParseHtml(content, document.getElementById(id).outerHTML);
-            return pdfMake.createPdf({
-                content: content,
-                pageOrientation: 'landscape'
             });
+
+            var header = function (data) {
+                doc.setFontSize(18);
+                doc.setTextColor(40);
+                doc.setFontStyle('normal');
+                //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
+                // doc.text("Testing Report", data.settings.margin.left, 50);
+            };
+
+            var options = {
+                beforePageContent: header,
+                margin: {
+                    top: 80
+                },
+                // startY: doc.autoTableEndPosY() + 20
+            };
+
+            doc.autoTable(res.columns, res.data, options);
+
+            doc.save("table.pdf");
         }
     </script>
-
 </body>
 
 </html>

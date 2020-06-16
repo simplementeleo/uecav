@@ -5,12 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title> UECAV </title>
+    <title> Registro OPSU | UECAV </title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="./boot/css/bootstrap.min.css">
+    <script src="https://cdn.rawgit.com/simonbengtsson/jsPDF/requirejs-fix-dist/dist/jspdf.debug.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@2.3.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="./font/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 </head>
+
 <body>
 
     <div id="app" class="d-flex justify-content-center align-items-center">
@@ -20,7 +25,8 @@
             <div :class="['card', 'my-5']">
                 <div class="d-flex justify-content-center align-items-center">
                     <span class="radius"></span>
-                    <i :class="['fas', 'fa-bars', 'text-white', 'toggle',  table || table == 'true' ? 'd-none': '']" @click="teacher = !teacher"></i>
+                    <i :class="['fas', 'fa-bars', 'text-white', 'toggle',  table || table == 'true' ? 'd-none': '']"
+                        @click="teacher = !teacher"></i>
                     <img class="mt-3" src="./img/logo.png" width="30%" alt="">
                 </div>
                 <!-- <h2 class="py-3 text-center">{{ title }} </h2> -->
@@ -126,6 +132,7 @@
                     </div>
                     <div :class="[steps.four ? '': 'd-none' ,'animate__animated', 'animate__rubberBand']">
                         <img class="p-5" src="./img/success.svg" width="100%" alt="">
+                        <a href="" class="btn btn-outline-primary text-center">Excelente</a>
                     </div>
 
 
@@ -136,6 +143,7 @@
                     <div :class="['alert', 'alert-danger', alertt ? '': 'd-none']" role="alert">
                         <i class="fas fa-exclamation-triangle"></i> Datos incorrectos
                     </div>
+                    <p class="text-center"><i class="text-secondary">Sección / Control de estudios</i></p>
                     <div class="col-md-12 mb-3">
                         <label for="userTeacher">Usuario</label>
                         <input maxlength="15" v-model="user.username" type="text" class="form-control" id="userTeacher"
@@ -159,35 +167,41 @@
                 <div class="card" style="max-width: 100%">
 
                     <div class="px-5 mt-5">
-                        <button class="btn btn-outline-primary next mb-3" @click="logout">
+                        <button class="btn btn-outline-primary next mb-3" @click="generatePdf">
+                            Generar PDF
+                        </button>
+                        <button class="btn btn-outline-secondary next mb-3" @click="logout">
                             Cerrar
                         </button>
-                        <input class="form-control" type="text" placeholder="Busca aquí...">
+                        <input class="form-control" v-model="search" type="text" placeholder="Busca aquí...">
                     </div>
-                    <div v-for="i in 5"
+                    <div v-if="filterStudents.length >= 1" v-for="student in filterStudents"
                         class="p-4 px-5 d-flex flex-md-row flex-sm-column justify-content-md-center align-items-md-center"
                         style="border-bottom: 1px solid #80808073;">
 
                         <div class="px-3">
-                            <h4>JIM PAUL DE LOS ANGELES VELASQUEZ </h4>
-                            <i class="text-secondary">V-30123123</i>
+                            <h4>{{ student.names }} {{student.lastnames}}</h4>
+                            <i class="text-secondary">V-{{student.cedula}}</i>
                         </div>
                         <div class="left-border px-3 d-sm-flex justify-content-sm-between flex-md-column">
                             <i class="text-secondary">Usuario:</i>
-                            <p>Username</p>
+                            <p>{{student.username}}</p>
                             <i class="text-secondary">Contraseña:</i>
-                            <p>fadcl122.</p>
+                            <p>{{student.passUser}}</p>
                         </div>
                         <div class="left-border px-3 d-sm-flex flex-md-column justify-content-sm-between">
                             <i class="text-secondary">Correo:</i>
-                            <p>corre@correo.com</p>
+                            <p>{{student.email}}</p>
                             <i class="text-secondary">Contraseña:</i>
-                            <p>xakKSA-</p>
+                            <p>{{student.passEmail}}</p>
                         </div>
-                        <button class="btn btn-outline-danger next">
-                                <i class="fas fa-trash"></i>
+                        <button class="btn btn-outline-danger next" @click="deleteItem(student)">
+                            <i class="fas fa-trash"></i>
                         </button>
 
+                    </div>
+                    <div v-if="filterStudents <= 0">
+                        <h4 class="text-center p-5">No existen datos disponibles</h4>
                     </div>
 
                 </div>
@@ -196,13 +210,36 @@
 
         </div>
 
-    </div>
+        <table id="basic-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cedula</th>
+                    <th>Nombres y Apellidos</th>
+                    <th>Usuario</th>
+                    <th>Contraseña</th>
+                    <th>Correo</th>
+                    <th>Contraseña</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(student,index) in students">
+                    <td align="right">{{index+1}}</td>
+                    <td>{{student.cedula}}</td>
+                    <td>{{student.names}} {{student.lastnames}}</td>
+                    <td>{{student.username}}</td>
+                    <td>{{student.passUser}}</td>
+                    <td>{{student.email}}</td>
+                    <td>{{student.passEmail}}</td>
+                </tr>
+
+            </tbody>
+        </table>
 
     </div>
 
-
-
-    <script src="vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="app.js"></script>
 
 </body>
