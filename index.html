@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Registro OPSU | UECAV </title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./img/logo.png">
     <script src="https://cdn.rawgit.com/simonbengtsson/jsPDF/requirejs-fix-dist/dist/jspdf.debug.js"></script>
     <script src="https://unpkg.com/jspdf-autotable@2.3.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -17,10 +18,15 @@
 </head>
 
 <body>
+    <div class="load">
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+    </div>
+    <div id="app" class="d-flex justify-content-center align-items-center animate__animated animate__backInDown">
 
-    <div id="app" class="d-flex justify-content-center align-items-center">
-
-        <div class="container d-flex justify-content-center flex-column align-items-center">
+        <div id="view" class="hide container d-flex justify-content-center flex-column align-items-center">
 
             <div :class="['card', 'my-5']">
                 <div class="d-flex justify-content-center align-items-center">

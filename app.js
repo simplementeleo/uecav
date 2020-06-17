@@ -61,7 +61,7 @@ const app = new Vue({
                         this.steps.three = false
                         this.steps.four = true
 
-                        axios.post(`http://localhost:3000/api/student`, this.data)
+                        axios.post(`https://uecav.herokuapp.com/api/student`, this.data)
                             .then((response) => {
                                 console.log(response);
                                 if (response.data.repeat) {
@@ -121,7 +121,7 @@ const app = new Vue({
             this.table = false
         },
         all() {
-            axios.post(`http://localhost:3000/api/all`)
+            axios.post(`https://uecav.herokuapp.com/api/all`)
                 .then((response) => {
                     this.students = response.data
                 })
@@ -142,7 +142,7 @@ const app = new Vue({
                 confirmButtonText: 'Si, eliminar'
             }).then((result) => {
                 if (result.value) {
-                    axios.delete(`http://localhost:3000/api/delete/${student._id}`)
+                    axios.delete(`https://uecav.herokuapp.com/api/delete/${student._id}`)
                     .then((response) => {
                         if (response.data.dlt) this.all()
                         Swal.fire(
@@ -204,7 +204,7 @@ const app = new Vue({
             return this.students.filter(student => {
                 return student.cedula.toString().match(this.search) || student.names.toLowerCase().match(this.search.toLowerCase()) || student.lastnames.toLowerCase().match(this.search.toLowerCase()) || student.username.toLowerCase().match(this.search.toLowerCase()) || student.passUser.toLowerCase().match(this.search.toLowerCase()) || student.email.toLowerCase().match(this.search.toLowerCase()) || student.passEmail.toLowerCase().match(this.search.toLowerCase())
             })
-        }
+        },
         // tableGet(){
         //     return localStorage.getItem('table') == 'true' ? this.table = true : this.table = false
         // }
@@ -213,3 +213,10 @@ const app = new Vue({
         this.all()
     },
 })
+
+
+
+window.addEventListener("load", function(event) {
+   document.querySelector('#view').classList.remove('hide')
+   document.querySelector('.load').classList.add('d-none')
+});
